@@ -69,6 +69,16 @@
     #elif defined(_APPLE_IOS_)
         #include <OpenGLES/ES2/gl.h>
         #include <OpenGLES/ES2/glext.h>
+    #elif defined(_ARM_WAYLAND_)
+        #include <EGL/egl.h>
+        #ifdef HAVE_GLES_2
+            #include <GLES2/gl2.h>
+            #include <GLES2/gl2ext.h>
+        #else
+            #include <GLES/gl.h>
+            #define GL_GLEXT_PROTOTYPES
+            #include <GLES/glext.h>
+        #endif
     #endif
 #else
     #ifdef _OSX_

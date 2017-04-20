@@ -31,6 +31,12 @@ void SampleMethod()
     std::cout << "You typed ctrl-r or pushed reset" << std::endl;
 }
 
+void ExitWindow()
+{
+    std::cout << "Quitting Window" << std::endl;
+    pangolin::Quit();
+}
+
 
 int main(/*int argc, char* argv[]*/)
 {  
@@ -79,12 +85,14 @@ int main(/*int argc, char* argv[]*/)
 
   // std::function objects can be used for Var's too. These work great with C++11 closures.
   pangolin::Var<std::function<void(void)> > reset("ui.Reset", SampleMethod);
+  pangolin::Var<std::function<void(void)> > exit("ui.Exit", ExitWindow);
 
   // Demonstration of how we can register a keyboard hook to alter a Var
   pangolin::RegisterKeyPressCallback(pangolin::PANGO_CTRL + 'b', pangolin::SetVarFunctor<double>("ui.A Double", 3.5));
 
   // Demonstration of how we can register a keyboard hook to trigger a method
   pangolin::RegisterKeyPressCallback(pangolin::PANGO_CTRL + 'r', SampleMethod);
+  pangolin::RegisterKeyPressCallback('q', ExitWindow);
 
   // Default hooks for exiting (Esc) and fullscreen (tab).
   while( !pangolin::ShouldQuit() )

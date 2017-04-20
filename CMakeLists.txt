@@ -6,6 +6,8 @@ set(PANGOLIN_VERSION ${PANGOLIN_VERSION_MAJOR}.${PANGOLIN_VERSION_MINOR})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/")
 
+set(BUILD_FOR_WAYLAND 1)
+set(ARM_WAYLAND 0)
 # Platform configuration vars
 include(SetPlatformVars)
 
@@ -66,6 +68,14 @@ if(ANDROID OR IOS)
     endif()
 endif()
 
+if(ARM_WAYLAND)
+  set(HAVE_GLES 1)
+  option(BUILD_FOR_GLES_2 "Build for OpenGL ES 2 instead of ES 1" ON )
+  if(BUILD_FOR_GLES_2)
+      set(HAVE_GLES_2 1)
+  endif()
+endif()
+
 if(_OSX_)
     set(CMAKE_MACOSX_RPATH ON)
 endif()
@@ -101,3 +111,4 @@ if(BUILD_EXAMPLES)
   add_subdirectory(examples)
   add_subdirectory(tools)
 endif()
+

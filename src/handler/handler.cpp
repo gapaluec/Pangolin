@@ -134,7 +134,11 @@ void Handler3D::PixelUnproject( View& view, GLprecision winx, GLprecision winy, 
 {
     const GLint viewport[4] = {view.v.l,view.v.b,view.v.w,view.v.h};
     const pangolin::OpenGlMatrix proj = cam_state->GetProjectionMatrix();
+#ifndef HAVE_GLES 
     glUnProject(winx, winy, winz, Identity4d, proj.m, viewport, &Pc[0], &Pc[1], &Pc[2]);
+#else
+    glUnProject(winx, winy, winz, Identity4f, proj.m, viewport, &Pc[0], &Pc[1], &Pc[2]);
+#endif
 }
 
 void Handler3D::GetPosNormal(pangolin::View& view, int winx, int winy, GLprecision p[3], GLprecision Pw[3], GLprecision Pc[3], GLprecision nw[3], GLprecision default_z)
@@ -192,10 +196,10 @@ void Handler3D::Mouse(View& display, MouseButton button, int x, int y, bool pres
     
     GLprecision T_nc[3*4];
     LieSetIdentity(T_nc);
-    
     if( pressed )
     {
         GetPosNormal(display,x,y,p,Pw,Pc,n,last_z);
+        // fprintf(stderr,"Handler3D::Mouse - p[2]: %d\n", p[2]);
         if( ValidWinDepth(p[2]) )
         {
             last_z = p[2];
@@ -249,7 +253,6 @@ void Handler3D::MouseMotion(View& display, int x, int y, int button_state)
             Rotation<>(T_nc, aboutx, abouty, (GLprecision)0.0);
         }else if( button_state == MouseButtonLeft )
         {
-            // Left Drag: in plane translate
             if( ValidWinDepth(last_z) )
             {
                 GLprecision np[3];

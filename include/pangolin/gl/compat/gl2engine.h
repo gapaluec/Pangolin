@@ -29,8 +29,8 @@
 
 #include <stack>
 
-#include <pangolin/opengl_render_state.h>
-#include <pangolin/glsl.h>
+#include <pangolin/display/opengl_render_state.h>
+#include <pangolin/gl/glsl.h>
 
 namespace pangolin {
 
@@ -38,6 +38,9 @@ class GlEngine
 {
 public:
     const char* vert =
+        #ifdef HAVE_GLES_2
+            "precision mediump float;\n"
+        #endif // HAVE_GLES_2
             "attribute vec4 a_position;\n"
             "attribute vec4 a_color;\n"
             "attribute vec3 a_normal;\n"
@@ -176,6 +179,25 @@ GlEngine& glEngine();
 #define GL_NORMAL_ARRAY                   0x8075
 #define GL_COLOR_ARRAY                    0x8076
 #define GL_TEXTURE_COORD_ARRAY            0x8078
+
+#define GL_LUMINANCE8 GL_LUMINANCE8_EXT
+#define GL_LUMINANCE16 0x8042
+#define GL_RGB8 GL_RGB8_OES
+#define GL_RGBA8 GL_RGBA8_OES
+#define GL_LUMINANCE32F_ARB GL_LUMINANCE32F_EXT
+#define GL_RGB32F GL_RGB32F_EXT
+#define GL_RGBA32F GL_RGBA32F_EXT
+#define GL_DOUBLE GL_FLOAT
+#define GL_RGB32F_ARB GL_RGB32F_EXT 
+#define GL_RG GL_RG_EXT
+#define GL_RGBA32F_ARB GL_RGBA32F_EXT
+#define GL_BGR 0x80E0
+#define GL_BGRA GL_BGRA_EXT
+#define GL_UNSIGNED_INT64_NV 0x140F
+#define GL_RED GL_RED_EXT
+#define GL_UNPACK_ROW_LENGTH GL_UNPACK_ROW_LENGTH_EXT
+#define GL_RENDER               0x1C00
+
 
 inline void glEnableClientState(GLenum cap)
 {
@@ -317,4 +339,29 @@ inline void glTexEnvf(	GLenum target,
     GLfloat param)
 {
     pango_print_error("Not Implemented: %s, %s, %d", __FUNCTION__, __FILE__, __LINE__);
+}
+
+inline void glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid * pointer)
+{
+    //
+}
+
+inline void glNormalPointer(GLenum type, GLsizei stride, const GLvoid * pointer)
+{
+    //
+}
+
+inline void glTranslated(GLfloat x, GLfloat y, GLfloat z)
+{
+    pangolin::GlEngine& gl = pangolin::glEngine();
+    pangolin::GLprecision* cm = gl.currentmatrix->top().m;
+    cm[12] += x;
+    cm[13] += y;
+    cm[14] += z;
+    gl.UpdateMatrices();
+}
+
+inline void glGetTexImage(  GLenum target, GLint level, GLenum format, GLenum type, GLvoid * img)
+{
+    //
 }

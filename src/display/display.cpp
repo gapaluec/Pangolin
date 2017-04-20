@@ -341,6 +341,7 @@ View& Display(const std::string& name)
         context->named_managed_views[name] = v;
         v->handler = &StaticHandler;
         context->base.views.push_back(v);
+        fprintf(stderr, "views size: %d \n", context->base.views.size());
         return *v;
     }
 }
@@ -488,6 +489,41 @@ void Mouse( int button_raw, int state, int x, int y)
     if(fresh_input) {
         context->base.handler->Mouse(context->base,button,x,y,pressed,context->mouse_state);
     }else if(context->activeDisplay && context->activeDisplay->handler) {
+        context->activeDisplay->handler->Mouse(*(context->activeDisplay),button,x,y,pressed,context->mouse_state);
+    }
+}
+
+void Mouse( MouseButton button, bool pressed, int x, int y)
+{
+    // Force coords to match OpenGl Window Coords
+    y = context->base.v.h - y;
+    
+    last_x = (float)x;
+    last_y = (float)y;
+    fprintf(stderr,"button action\n");
+    // const MouseButton button = (MouseButton)(1 << (button_raw & 0xf) );
+    // const bool pressed = (state == 0);
+    
+    context->had_input = context->is_double_buffered ? 2 : 1;
+    
+    const bool fresh_input = (context->mouse_state == 0);
+    
+    if( pressed ) {
+        context->mouse_state |= (button&7);
+    }else{
+        context->mouse_state &= ~(button&7);
+    }
+    
+#ifdef HAVE_GLUT
+    context->mouse_state &= 0x0000ffff;
+    context->mouse_state |= glutGetModifiers() << 16;
+#endif
+    
+    if(fresh_input) {
+        fprintf(stderr,"fresh input\n");
+        context->base.handler->Mouse(context->base,button,x,y,pressed,context->mouse_state);
+    }else if(context->activeDisplay && context->activeDisplay->handler) {
+        fprintf(stderr,"!fresh input\n");
         context->activeDisplay->handler->Mouse(*(context->activeDisplay),button,x,y,pressed,context->mouse_state);
     }
 }

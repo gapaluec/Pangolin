@@ -160,6 +160,9 @@ namespace pangolin
     void Mouse( int button, int state, int x, int y);
 
     PANGOLIN_EXPORT
+    void Mouse( MouseButton button, bool pressed, int x, int y);
+
+    PANGOLIN_EXPORT
     void MouseMotion( int x, int y);
 
     PANGOLIN_EXPORT

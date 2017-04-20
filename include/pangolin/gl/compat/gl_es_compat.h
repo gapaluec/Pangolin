@@ -20,7 +20,7 @@
     #define glFramebufferTexture2DEXT   glFramebufferTexture2D
     #define GL_FRAMEBUFFER_EXT          GL_FRAMEBUFFER
     #define GL_DEPTH_COMPONENT24        GL_DEPTH_COMPONENT16 // <----
-    #define GL_COLOR_ATTACHMENT0_EXT    GL_COLOR_ATTACHMENT0
+    // #define GL_COLOR_ATTACHMENT0_EXT    GL_COLOR_ATTACHMENT0
     #define GL_DEPTH_ATTACHMENT_EXT     GL_DEPTH_ATTACHMENT
 #else
     #define glOrtho                     glOrthof
@@ -37,7 +37,7 @@
 #define glGetDoublev                glGetFloatv
 
 #ifdef HAVE_GLES_2
-#include <pangolin/gl2engine.h>
+#include <pangolin/gl/compat/gl2engine.h>
 #endif
 
 inline void glRectf(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)
